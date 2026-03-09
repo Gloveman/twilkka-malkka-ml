@@ -2,7 +2,17 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="8a0f3c12-4ac2-4d0e-90ad-00723a0dadcf" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/01_notebooks/01_preprocessing/rshyun24/03_numer_Smart.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/01_notebooks/01_preprocessing/rshyun24/03_numer_Smart.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/twilkka-malkka-ml.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/01_notebooks/01_preprocessing/jaehyun_notebook/03_numer_Smart.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/01_notebooks/01_preprocessing/jaehyun_notebook/03_numer_smart.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/01_notebooks/01_preprocessing/jaehyun_notebook/04_numer_tab.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/01_notebooks/01_preprocessing/jaehyun_notebook/04_numer_tab.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/01_notebooks/01_preprocessing/jaehyun_notebook/05_numer_days.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/01_notebooks/01_preprocessing/jaehyun_notebook/05_numer_days.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/01_notebooks/01_preprocessing/jaehyun_notebook/06_numer_end.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/01_notebooks/01_preprocessing/jaehyun_notebook/06_numer_end.ipynb" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -58,6 +68,7 @@
       <updated>1772977614315</updated>
       <workItem from="1772977616013" duration="10585000" />
       <workItem from="1773014965915" duration="242000" />
+      <workItem from="1773015222723" duration="1272000" />
     </task>
     <servers />
   </component>
