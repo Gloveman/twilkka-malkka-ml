@@ -254,11 +254,11 @@ def make_usage_data(result_df: pd.DataFrame) -> dict:
     inactive = int((result_df["watch_days"] < 4).sum())
 
     items = [
-        {
-            "label": "매우 자주 이용",
-            "value": round(heavy / total_users * 100, 1),
-            "desc": "충성 유지군",
-        },
+        # {
+        #     "label": "매우 자주 이용",
+        #     "value": round(heavy / total_users * 100, 1),
+        #     "desc": "충성 유지군",
+        # },
         {
             "label": "주기적 이용",
             "value": round(regular / total_users * 100, 1),
