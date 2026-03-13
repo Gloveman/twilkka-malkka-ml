@@ -9,7 +9,7 @@ def init_state() -> None:
         "is_sample_mode": False,
         "selected_model_name": "xgboost",
         "analysis_payload": None,
-        "model_path": r"C:\Users\Playdata\Documents\workspace\twilkka-malkka-ml\05_artifacts\00_models\model.json",
+        "model_path": r"05_artifacts/00_models/model.json",
         "high_risk_visible_count": 4,
     }
 
