@@ -9,7 +9,7 @@ def init_state() -> None:
         "is_sample_mode": False,
         "selected_model_name": "xgboost",
         "analysis_payload": None,
-        "model_path": r"C:\Users\Playdata\Documents\workspace\twilkka-malkka-ml\01_notebooks\03_models\my_model\model.json",
+        "model_path": r"../../03_models/my_model/model.json",
     }
 
     for key, value in defaults.items():

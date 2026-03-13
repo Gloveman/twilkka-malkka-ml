@@ -1,5 +1,9 @@
 import plotly.graph_objects as go
 
+_CHART_BG = "rgba(0,0,0,0)"
+_GRID_COLOR = "#e5e7eb"
+_TICK_COLOR = "#6b7280"
+
 
 def make_trend_chart(monthly_trend: dict) -> go.Figure:
     fig = go.Figure()
@@ -10,8 +14,8 @@ def make_trend_chart(monthly_trend: dict) -> go.Figure:
             y=monthly_trend["이탈률"],
             mode="lines+markers",
             name="평균 예측 이탈률",
-            line=dict(color="#FF0A16", width=4),
-            marker=dict(size=7, color="#FF0A16"),
+            line=dict(color="#8B5CF6", width=3),
+            marker=dict(size=7, color="#8B5CF6"),
         )
     )
 
@@ -29,36 +33,42 @@ def make_trend_chart(monthly_trend: dict) -> go.Figure:
     )
 
     fig.update_layout(
-        height=380,
+        height=430,
         margin=dict(l=10, r=10, t=10, b=10),
-        paper_bgcolor="rgba(0,0,0,0)",
-        plot_bgcolor="rgba(0,0,0,0)",
+        # paper_bgcolor=_CHART_BG,
+        # plot_bgcolor=_CHART_BG,
+        paper_bgcolor="white",
+        plot_bgcolor="white",
+        font=dict(color=_TICK_COLOR, family="Inter, sans-serif"),
         legend=dict(
             orientation="h",
             yanchor="bottom",
             y=1.05,
             xanchor="left",
             x=0,
-            font=dict(color="#E5E7EB"),
+            font=dict(color="#374151"),
+            bgcolor="rgba(0,0,0,0)",
         ),
         xaxis=dict(
             showgrid=False,
-            tickfont=dict(color="#D1D5DB"),
+            tickfont=dict(color=_TICK_COLOR, size=12),
+            showline=False,
         ),
         yaxis=dict(
             title=dict(
                 text="예측 이탈률(%)",
-                font=dict(color="#FFB4B4"),
+                font=dict(color="#fc8181"),
             ),
             showgrid=True,
-            gridcolor="rgba(255,255,255,0.08)",
+            gridcolor=_GRID_COLOR,
             zeroline=False,
-            tickfont=dict(color="#D1D5DB"),
+            tickfont=dict(color=_TICK_COLOR, size=12),
+            # title=dict(text="비율(%)", font=dict(color=_TICK_COLOR, size=11)),
         ),
         yaxis2=dict(
             title=dict(
                 text="최근 시청 횟수",
-                font=dict(color="#A5C8FF"),
+                font=dict(color="#fc8181"),
             ),
             overlaying="y",
             side="right",
@@ -71,7 +81,12 @@ def make_trend_chart(monthly_trend: dict) -> go.Figure:
 
 
 def make_risk_donut(risk_segments: dict) -> go.Figure:
-    colors = ["#E50914", "#F97316", "#FACC15", "#22C55E"]
+    # colors = ["#E50914", "#F97316", "#FACC15", "#22C55E"]
+    # colors = ["#E50914", "#F97316", "#FACC15", "#22C55E"]
+    colors = ["#FF6A1A", "#F4B323", "#2DA2DB","#8EDC63"]
+    # colors = ["#E50914", "#ff6b6b", "#ffb3b3", "#ffe0e0"]
+
+    total = sum(risk_segments["values"])
 
     fig = go.Figure(
         data=[
@@ -79,7 +94,7 @@ def make_risk_donut(risk_segments: dict) -> go.Figure:
                 labels=risk_segments["labels"],
                 values=risk_segments["values"],
                 hole=0.65,
-                marker=dict(colors=colors),
+                marker=dict(colors=colors, line=dict(color="#ffffff", width=1.5)),
                 textinfo="none",
                 sort=False,
             )
@@ -87,16 +102,16 @@ def make_risk_donut(risk_segments: dict) -> go.Figure:
     )
 
     fig.update_layout(
-        height=320,
+        height=230,
         margin=dict(l=10, r=10, t=10, b=10),
         paper_bgcolor="rgba(0,0,0,0)",
         showlegend=False,
         annotations=[
             dict(
-                text=f"<b>{sum(risk_segments['values']):,}</b><br>총 사용자",
+                text=f"<b>{total:,}</b><br><span style='font-size:13px;color:#6b7280'>총 사용자</span>",
                 x=0.5,
                 y=0.5,
-                font=dict(size=18, color="#F9FAFB"),
+                font=dict(size=23, color="#111827", family="Inter, sans-serif"),
                 showarrow=False,
             )
         ],
@@ -107,7 +122,9 @@ def make_risk_donut(risk_segments: dict) -> go.Figure:
 def make_genre_donut(items: list[dict]) -> go.Figure:
     labels = [g["label"] for g in items]
     values = [g["value"] for g in items]
-    colors = ["#3B82F6", "#10B981", "#8B5CF6", "#F59E0B", "#EF4444"]
+    # colors = ["#3B82F6", "#10B981", "#8B5CF6", "#F59E0B", "#EF4444"]
+    colors = ["#FF6A1A", "#F4B323", "#2DA2DB","#8EDC63"]
+    # colors = ["#E50914", "#ff6b6b", "#ffb3b3", "#ffe0e0"]
 
     fig = go.Figure(
         data=[
@@ -115,7 +132,7 @@ def make_genre_donut(items: list[dict]) -> go.Figure:
                 labels=labels,
                 values=values,
                 hole=0.65,
-                marker=dict(colors=colors),
+                marker=dict(colors=colors, line=dict(color="#ffffff", width=1.5)),
                 textinfo="none",
                 sort=False,
             )
@@ -123,9 +140,10 @@ def make_genre_donut(items: list[dict]) -> go.Figure:
     )
 
     fig.update_layout(
-        height=280,
+        height=230,
         margin=dict(l=10, r=10, t=10, b=10),
-        paper_bgcolor="rgba(0,0,0,0)",
+        paper_bgcolor=_CHART_BG,
+        plot_bgcolor=_CHART_BG,
         showlegend=False,
     )
     return fig

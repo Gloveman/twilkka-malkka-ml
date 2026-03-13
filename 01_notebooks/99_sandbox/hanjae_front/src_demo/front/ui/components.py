@@ -26,17 +26,21 @@ def render_header(headline_insight: str) -> None:
         dedent(
             f"""
             <div class="hero-wrap">
-                <div class="hero-title">🎬 Netflix 고객 이탈 예측 서비스</div>
-                <div class="hero-sub">실제 업로드 데이터와 모델 기반으로 이탈 위험과 CRM 타깃을 확인합니다.</div>
+                <div class="hero-header">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg" class="netflix-logo">
+                    <div class="hero-title">고객 이탈 예측 서비스</div>
+                </div>
+                <div class="hero-sub">
+                    실제 업로드 데이터와 모델 기반으로 이탈 위험과 CRM 타깃을 확인합니다.
+                </div>
                 <div class="hero-insight">
                     {headline_insight}
-                </div>
+            </div>
             </div>
             """
         ),
         unsafe_allow_html=True,
     )
-
 
 def render_data_meta(data_meta: dict) -> None:
     st.markdown(
@@ -67,7 +71,6 @@ def render_section_heading(title: str, subtitle: str) -> None:
         unsafe_allow_html=True,
     )
 
-
 def render_kpi_card(title: str, value: str, subtext: str, icon: str) -> None:
     st.markdown(
         dedent(
@@ -85,158 +88,171 @@ def render_kpi_card(title: str, value: str, subtext: str, icon: str) -> None:
         unsafe_allow_html=True,
     )
 
+def render_trend_card(title: str, subtitle: str, fig, key: str = "card-trend") -> None:
+    with st.container(key=key):
+        render_section_heading(title, subtitle)
+        st.plotly_chart(fig, use_container_width=True)
 
 def render_risk_donut(risk_segments: dict) -> None:
-    render_section_heading("⚠️ 위험도 분포", "예측 확률 기준 사용자 세그먼트 분포")
 
-    fig = make_risk_donut(risk_segments)
-    st.plotly_chart(fig, use_container_width=True)
 
-    total = max(sum(risk_segments["values"]), 1)
-    colors = ["#E50914", "#F97316", "#FACC15", "#22C55E"]
+    with st.container(key="card-risk-donut"):
+        render_section_heading("⚠️ 위험도 분포", "예측 확률 기준 사용자 세그먼트 분포")
 
-    for idx, (label, value) in enumerate(zip(risk_segments["labels"], risk_segments["values"])):
-        pct = value / total * 100
+        fig = make_risk_donut(risk_segments)
+        st.plotly_chart(fig, use_container_width=True)
+
+        total = max(sum(risk_segments["values"]), 1)
+        # colors = ["#E50914", "#F97316", "#FACC15", "#22C55E"]
+        colors = ["#FF6A1A", "#F4B323", "#2DA2DB", "#8EDC63"]
+        # colors = ["#E50914", "#ff6b6b", "#ffb3b3", "#ffe0e0"]
+
+        for idx, (label, value) in enumerate(zip(risk_segments["labels"], risk_segments["values"])):
+            pct = value / total * 100
+            st.markdown(
+                dedent(
+                    f"""
+                    <div class="legend-item">
+                        <div class="legend-left">
+                            <div class="legend-dot" style="background:{colors[idx]};"></div>
+                            <div class="legend-label">{label}</div>
+                        </div>
+                        <div class="legend-right">
+                            <span class="legend-value">{value:,}명</span>
+                            <span class="legend-pct">({pct:.1f}%)</span>
+                        </div>
+                    </div>
+                    """
+                ),
+                unsafe_allow_html=True,
+            )
+
+        high_risk_pct = risk_segments["values"][0] / total * 100
         st.markdown(
             dedent(
                 f"""
-                <div class="legend-item">
-                    <div class="legend-left">
-                        <div class="legend-dot" style="background:{colors[idx]};"></div>
-                        <div class="legend-label">{label}</div>
-                    </div>
-                    <div class="legend-right">
-                        <span class="legend-value">{value:,}명</span>
-                        <span class="legend-pct">({pct:.1f}%)</span>
-                    </div>
+                <div class="alert-box">
+                    전체의 <b>{high_risk_pct:.1f}%</b>가 즉시 관리가 필요한 고위험군입니다.
                 </div>
                 """
             ),
             unsafe_allow_html=True,
         )
-
-    high_risk_pct = risk_segments["values"][0] / total * 100
-    st.markdown(
-        dedent(
-            f"""
-            <div class="alert-box">
-                전체의 <b>{high_risk_pct:.1f}%</b>가 즉시 관리가 필요한 고위험군입니다.
-            </div>
-            """
-        ),
-        unsafe_allow_html=True,
-    )
-
 
 def render_ott_usage(usage_data: dict) -> None:
-    render_section_heading("▶️ 이용 빈도 분포", "시청일수를 기준으로 나눈 사용자 이용 유형")
+    with st.container(key="card-ott-usage"):
+        render_section_heading("▶️ 이용 빈도 분포", "시청일수를 기준으로 나눈 사용자 이용 유형")
 
-    for item in usage_data["items"]:
+        for item in usage_data["items"]:
+            st.markdown(
+                dedent(
+                    f"""
+                    <div class="metric-row">
+                        <div class="metric-row-top">
+                            <div class="metric-label">{item["label"]}</div>
+                            <div class="metric-value">{item["value"]:.1f}%</div>
+                        </div>
+                        <div class="metric-desc">{item["desc"]}</div>
+                        <div class="bar-track">
+                            <div class="bar-fill-blue" style="width:{item["value"]}%;"></div>
+                        </div>
+                    </div>
+                    """
+                ),
+                unsafe_allow_html=True,
+            )
+
         st.markdown(
             dedent(
                 f"""
-                <div class="metric-row">
-                    <div class="metric-row-top">
-                        <div class="metric-label">{item["label"]}</div>
-                        <div class="metric-value">{item["value"]:.1f}%</div>
-                    </div>
-                    <div class="metric-desc">{item["desc"]}</div>
-                    <div class="bar-track">
-                        <div class="bar-fill-blue" style="width:{item["value"]}%;"></div>
-                    </div>
+                <div class="alert-box">
+                    {usage_data["insight"]}
                 </div>
                 """
             ),
             unsafe_allow_html=True,
         )
-
-    st.markdown(
-        dedent(
-            f"""
-            <div class="alert-box">
-                {usage_data["insight"]}
-            </div>
-            """
-        ),
-        unsafe_allow_html=True,
-    )
-
 
 def render_genre_chart(profile_data: dict) -> None:
-    render_section_heading("🎞 사용자 시청 프로필", "행동 기반으로 나눈 주요 사용자 유형 비중")
+    with st.container(key="card-genre-chart"):
+        render_section_heading("🎞 사용자 시청 프로필", "행동 기반으로 나눈 주요 사용자 유형 비중")
 
-    fig = make_genre_donut(profile_data["items"])
-    st.plotly_chart(fig, use_container_width=True)
+        fig = make_genre_donut(profile_data["items"])
+        st.plotly_chart(fig, use_container_width=True)
 
-    colors = ["#3B82F6", "#10B981", "#8B5CF6", "#F59E0B", "#EF4444"]
+        # colors = ["#3B82F6", "#10B981", "#8B5CF6", "#F59E0B", "#EF4444"]
+        # colors = ["#ff4e26", "#8B5CF6", "#3B82F6", "#F59E0B", "#10B981"]
+        colors = ["#FF6A1A", "#F4B323", "#2DA2DB", "#8EDC63"]
+        # colors = ["#E50914", "#ff6b6b", "#ffb3b3", "#ffe0e0"]
 
-    for idx, item in enumerate(profile_data["items"]):
-        color = colors[idx % len(colors)]
+        for idx, item in enumerate(profile_data["items"]):
+            color = colors[idx % len(colors)]
+            st.markdown(
+                dedent(
+                    f"""
+                    <div class="legend-item">
+                        <div class="legend-left">
+                            <div class="legend-dot" style="background:{color};"></div>
+                            <div class="legend-label">{item["label"]}</div>
+                        </div>
+                        <div class="legend-right">
+                            <span class="legend-value">{item["value"]:.1f}%</span>
+                        </div>
+                    </div>
+                    """
+                ),
+                unsafe_allow_html=True,
+            )
+
         st.markdown(
             dedent(
                 f"""
-                <div class="legend-item">
-                    <div class="legend-left">
-                        <div class="legend-dot" style="background:{color};"></div>
-                        <div class="legend-label">{item["label"]}</div>
-                    </div>
-                    <div class="legend-right">
-                        <span class="legend-value">{item["value"]:.1f}%</span>
-                    </div>
+                <div class="alert-box">
+                    {profile_data["insight"]}
                 </div>
                 """
             ),
             unsafe_allow_html=True,
         )
-
-    st.markdown(
-        dedent(
-            f"""
-            <div class="alert-box">
-                {profile_data["insight"]}
-            </div>
-            """
-        ),
-        unsafe_allow_html=True,
-    )
 
 
 def render_churn_drivers(driver_data: dict) -> None:
-    render_section_heading("📉 이탈 예측 주요 요인", "선택한 모델의 피처 중요도 기준 핵심 요인")
+    with st.container(key="card-churn-drivers"):
+        render_section_heading("📉 이탈 예측 주요 요인", "선택한 모델의 피처 중요도 기준 핵심 요인")
 
-    for item in driver_data["items"]:
+        for item in driver_data["items"]:
+            st.markdown(
+                dedent(
+                    f"""
+                    <div class="metric-row">
+                        <div class="metric-row-top">
+                            <div class="metric-label">{item["label"]}</div>
+                            <div class="metric-value">{item["value"]:.1f}%</div>
+                        </div>
+                        <div class="bar-track">
+                            <div class="bar-fill-red" style="width:{item["value"]}%;"></div>
+                        </div>
+                    </div>
+                    """
+                ),
+                unsafe_allow_html=True,
+            )
+
         st.markdown(
             dedent(
                 f"""
-                <div class="metric-row">
-                    <div class="metric-row-top">
-                        <div class="metric-label">{item["label"]}</div>
-                        <div class="metric-value">{item["value"]:.1f}%</div>
-                    </div>
-                    <div class="bar-track">
-                        <div class="bar-fill-red" style="width:{item["value"]}%;"></div>
-                    </div>
+                <div class="alert-box">
+                    {driver_data["insight"]}
                 </div>
                 """
             ),
             unsafe_allow_html=True,
         )
-
-    st.markdown(
-        dedent(
-            f"""
-            <div class="alert-box">
-                {driver_data["insight"]}
-            </div>
-            """
-        ),
-        unsafe_allow_html=True,
-    )
 
 
 def render_campaign_recommendations(campaign_data: list[dict]) -> None:
     render_section_heading(
-        "🎯 추천 캠페인",
+        "추천 캠페인",
         "현재 업로드 데이터 기준으로 바로 실행할 수 있는 CRM 액션 제안입니다.",
     )
 
@@ -257,13 +273,20 @@ def render_campaign_recommendations(campaign_data: list[dict]) -> None:
                 unsafe_allow_html=True,
             )
 
+
 def render_high_risk_users(users: list[dict]) -> None:
     render_section_heading(
-        "🚨 높은 이탈 위험 사용자",
+        "높은 이탈 위험 사용자",
         "위험도와 행동 신호를 기준으로 우선 CRM 대상 고객을 확인합니다.",
     )
 
-    for user in users:
+    if "high_risk_visible_count" not in st.session_state:
+        st.session_state.high_risk_visible_count = 4
+
+    visible_count = st.session_state.high_risk_visible_count
+    visible_users = users[:visible_count]
+
+    for user in visible_users:
         user_html = f"""
 <div class="user-card">
     <div class="user-head">
@@ -309,3 +332,10 @@ def render_high_risk_users(users: list[dict]) -> None:
 </div>
 """
         st.markdown(user_html, unsafe_allow_html=True)
+
+    remaining = len(users) - visible_count
+
+    if remaining > 0:
+        if st.button(f"더보기", key="show_more_high_risk", use_container_width=True):
+            st.session_state.high_risk_visible_count += 4
+            st.rerun()

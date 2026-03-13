@@ -16,6 +16,7 @@ from ..ui.components import (
 )
 from ..viz.charts import make_trend_chart
 from .analytics import build_analysis_payload, load_xgb_model
+from ..ui.components import render_trend_card
 
 
 def _ensure_analysis_payload() -> dict:
@@ -53,6 +54,7 @@ def render_dashboard_view() -> None:
 
     with top_right:
         render_data_meta(payload["data_meta"])
+        st.markdown("<div style='margin-top:12px;'></div>", unsafe_allow_html=True)
 
         button_col1, button_col2 = st.columns(2)
 
@@ -67,7 +69,7 @@ def render_dashboard_view() -> None:
                 go_home()
                 st.rerun()
 
-    st.markdown("<div style='height: 18px;'></div>", unsafe_allow_html=True)
+    # st.markdown("<div style='height: 18px;'></div>", unsafe_allow_html=True)
 
     kpi_cols = st.columns(4)
     for col, item in zip(kpi_cols, payload["kpi_data"]):
@@ -84,12 +86,14 @@ def render_dashboard_view() -> None:
     left, right = st.columns([1.7, 1])
 
     with left:
-        render_section_heading(
+        fig = make_trend_chart(payload["trend_data"])
+        render_trend_card(
             "📈 미시청 구간별 이탈 추세",
             "최근 미시청 일수 구간에 따라 평균 이탈확률과 최근 활동성이 어떻게 달라지는지 확인합니다.",
+            fig,
+            key="card-trend",
         )
-        fig = make_trend_chart(payload["trend_data"])
-        st.plotly_chart(fig, use_container_width=True)
+
 
     with right:
         render_risk_donut(payload["risk_segments"])
